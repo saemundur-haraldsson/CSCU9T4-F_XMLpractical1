@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<menu>
+    <item category="starters">
+        <name>Bread sticks</name>
+        <price>0.30</price>
+        <description>Something to fill you up while you wait.</description>
+    </item>
+    <item category="starters">
+        <name>Salad</name>
+        <price>5.40</price>
+        <description>A very fancy salad.</description>
+    </item>
+    <item category="starters">
+        <name>Soup</name>
+        <price>2.30</price>
+        <description>Leek and onion soup</description>
+    </item>
+    <item category="mains">
+        <name>Burger</name>
+        <price>8.30</price>
+        <description>Just beef and a bun</description>
+    </item>
+    <item category="mains">
+        <name>Steak</name>
+        <price>12.40</price>
+        <description>Some mammal meat</description>
+    </item>
+    <item category="mains">
+        <name>Pasta</name>
+        <price>6.40</price>
+        <description>Italian? Maybe.</description>
+    </item>
+    <item category="deserts">
+        <name>Ice cream</name>
+        <price>3.60</price>
+        <description>It's cold, okay?</description>
+    </item>
+    <item category="deserts">
+        <name>Cake</name>
+        <price>1.50</price>
+        <description>Whatever was reduced in Co-op</description>
+    </item>
+</menu>
