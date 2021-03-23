@@ -9,6 +9,7 @@ import javax.xml.transform.*;       // import DOM source classes
 
 //import com.sun.xml.internal.bind.marshaller.NioEscapeHandler;
 import org.w3c.dom.*;               // import DOM
+import org.xml.sax.SAXParseException;
 
 /**
   DOM handler to read XML information, to create this, and to print it.
@@ -41,7 +42,16 @@ public class DOMMenu {
     // load XML file into "document"
     loadDocument(args[0]);
     // print staff.xml using DOM methods and XPath queries
-    printNodes();
+    if (args.length < 2)																											// checks if there are 2 arguments in args
+    {
+    	System.out.println("Please provide 2 files: XML doument and a schema");
+    }
+    else if(validateDocument(args[1]) == true && args[1].equals("small_menu.xsd")) 	// validates the document if the right file is provided
+    {
+        printNodes();
+    }
+
+
   
    
   }
@@ -65,7 +75,8 @@ public class DOMMenu {
       document = builder.parse(new File(filename));
     }
     catch (Exception exception) {
-      System.err.println("could not load document " + exception);
+      System.out.println("Could not load document, The system cannot find the file specified ");
+      System.exit(0);																	// terminates the program
     }
   }
 
@@ -82,7 +93,12 @@ public class DOMMenu {
       Validator validator = schema.newValidator();
       validator.validate(new DOMSource(document));
       return true;
-    } catch (Exception e){
+    }
+     catch (SAXParseException e) {
+    	System.out.println("The XML file and the XML schema do not match " + e);			// a useful message for the user
+      	return false;
+      }
+     catch (Exception e){
       System.err.println(e);
       System.err.println("Could not load schema or validate");
       return false;
@@ -93,10 +109,23 @@ public class DOMMenu {
   */
   private static void printNodes() {
     Node menuItem_1 = document.getFirstChild();
-    Node menuItem_2 = menuItem_1.getFirstChild().getNextSibling();
-    System.out.println("First child is: " + menuItem_1.getNodeName());
-    System.out.println("  Child is: " + menuItem_2.getNodeName());
+    Node base = null;												//sets the node "item" to null
+    Node name = null;												//sets the node  "name" to null
+    Node price = null;												//sets the node  "price" to null
+    Node description = null;									//sets the node  "description" to null
 
+    NodeList items = document.getElementsByTagName("item");	//creating a NodeList, populated with "item" elements
+
+    for (int i = 0; i < items.getLength();i ++) {										// looping through the elements in the NodeList
+    	base = items.item(i);																	// setting base to be equal to the i'th item in the list
+    	name = base.getFirstChild().getNextSibling();							// setting the var to be equal to the i'th item's name
+        price = name.getNextSibling().getNextSibling();						// setting the var to be equal to the i'th item's price
+        description = price.getNextSibling().getNextSibling();			// setting the var to be equal to the i'th item's description
+        double p = Double.parseDouble(price.getTextContent());		// parsing the price to be a double (for future computations)
+
+        System.out.printf("%-13s %-8.2f %s%n",name.getTextContent(), p, description.getTextContent() );			// printing the output
+    	
+    }
   }
 
   /**
