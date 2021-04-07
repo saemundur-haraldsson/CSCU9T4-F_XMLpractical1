@@ -1,3 +1,5 @@
+package XML;
+
 import java.io.*;               // import input-output
 
 import javax.xml.XMLConstants;
@@ -9,6 +11,7 @@ import javax.xml.transform.*;       // import DOM source classes
 
 //import com.sun.xml.internal.bind.marshaller.NioEscapeHandler;
 import org.w3c.dom.*;               // import DOM
+import org.xml.sax.SAXParseException;
 
 /**
   DOM handler to read XML information, to create this, and to print it.
@@ -36,13 +39,15 @@ public class DOMMenu {
     Main program to call DOM parser.
 
     @param args         command-line arguments
+   * @throws InterruptedException
   */
-  public static void main(String[] args)  {
+  public static void main(String[] args) throws InterruptedException  {
     // load XML file into "document"
-    loadDocument(args[0]);
+    loadDocument(args[0] , args[1]);
+    validateDocument(args[1]);
     // print staff.xml using DOM methods and XPath queries
     printNodes();
-  
+
    
   }
 
@@ -51,7 +56,7 @@ public class DOMMenu {
 
     @param filename     XML file to read
   */
-  private static void loadDocument(String filename) {
+  private static void loadDocument(String filename , String schemaPath) {
     try {
       // create a document builder
       DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
@@ -63,6 +68,12 @@ public class DOMMenu {
 
       // parse the document for later searching
       document = builder.parse(new File(filename));
+
+      SchemaFactory schemaFac = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+        schema = schemaFac.newSchema(new File(schemaPath));
+
+      
+
     }
     catch (Exception exception) {
       System.err.println("could not load document " + exception);
@@ -82,20 +93,32 @@ public class DOMMenu {
       Validator validator = schema.newValidator();
       validator.validate(new DOMSource(document));
       return true;
-    } catch (Exception e){
-      System.err.println(e);
+    } catch (SAXParseException spe){
+      System.err.println(spe);
       System.err.println("Could not load schema or validate");
+
       return false;
     }
+    catch (Exception e)
+      {
+        System.err.println(e);
+        System.err.println("Could not load schema or validate");
+        return false;
+      }
   }
   /**
     Print nodes using DOM methods and XPath queries.
+   * @throws InterruptedException
   */
-  private static void printNodes() {
-    Node menuItem_1 = document.getFirstChild();
-    Node menuItem_2 = menuItem_1.getFirstChild().getNextSibling();
-    System.out.println("First child is: " + menuItem_1.getNodeName());
-    System.out.println("  Child is: " + menuItem_2.getNodeName());
+  private static void printNodes() throws InterruptedException {
+
+    NodeList items = document.getElementsByTagName("item");
+
+    if(items.item(0).hasAttributes() == true)
+      {
+        System.out.println(items.item(0).get);
+      }
+
 
   }
 

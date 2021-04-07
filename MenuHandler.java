@@ -1,3 +1,5 @@
+package XML;
+
 import org.xml.sax.*;				// import SAX classes
 import org.xml.sax.helpers.*;		// import SAX helper classes
 
